@@ -1,0 +1,49 @@
+---
+title: "Special Work Performance 1"
+geometry: margin=2cm
+output: 
+  pdf_document:
+    fig_width: 7
+    fig_height: 6
+    fig_caption: true
+sansfont: times
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+1. there are 6 variables and 397 observations in the data set
+```{r}
+library(car)
+library(corrplot)
+data <- Salaries
+dimensions <- dim(data)
+```
+2. there are 19 professors who have more than 40 yeats of service, assuming the term \textit{professor} refers only to observations with rank == 'Prof'
+```{r}
+data.df <- data.frame(data)
+num_of_profs <- sum(subset(data.df$rank == 'Prof', data.df$yrs.service > 40))
+```
+3. assuming the rank is not specified, 54 people have salary larger than $150,000. 
+```{r}
+salary <- nrow(subset(data, salary > 150000))
+```
+4. the mean salary for professors with more than 20 years of service is $126,772.1 with the rank restricted to rank == 'Prof'
+```{r}
+mean_salary <- mean((subset(data$salary, data.df$rank == 'Prof', data.df$yrs.service > 20)))
+```
+5. you can find out more about the data set by using the function summary():
+```{r}
+summary(data)
+```
+6. the following tables provide the counts and proportions of men and women by rank. The results show that the number of male professors is much higher than the number of women.  
+```{r}
+tab <- table(data$sex, data$rank)
+knitr::kable(
+  head(tab[, 1:3], 3), caption = 'counts of men and women by rank'
+)
+```
+
+
+
