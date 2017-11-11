@@ -1,0 +1,110 @@
+---
+title: "Special Work Performance 1: Describing Data"
+geometry: margin=2cm
+output: 
+  pdf_document:
+    fig_caption: true
+sansfont: times
+fontsize: 12pt
+fig_width: 6
+fig_heigth: 4
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+```
+
+Humboldt University Berlin
+Customer Analytics and Customer Insights WS 2017/18
+by Prof. Dr. Daniel Klapper
+Group 9: Julia , Ishvarya Siddhat, Natalie Habib 
+Submitted at November 12, 2017
+
+1. The data set contains data about the salaries from professors. In total, there are 6 variables and 397 observations in the data set. The variables are _rank_, _discipline_, _yrs.since.phd_, _yrs.service_, _sex_ and _salary_. 
+```{r}
+library(car)
+library(corrplot)
+data <- Salaries
+
+dimensions <- dim(data)
+```
+2. there are 19 professors who have more than 40 yeats of service, assuming the term \textit{professor} refers only to observations with rank == 'Prof'
+```{r}
+data.df <- data.frame(data)
+num_of_profs <- sum(subset(data.df$rank == 'Prof', data.df$yrs.service > 40))
+```
+3. assuming the rank is not specified, 54 people have salary larger than $150,000. 
+```{r}
+salary <- nrow(subset(data, salary > 150000))
+```
+4. the mean salary for professors with more than 20 years of service is $126,772.1 with the rank restricted to rank == 'Prof'
+```{r}
+mean_salary <- mean((subset(data$salary, data.df$rank == 'Prof', data.df$yrs.service > 20)))
+```
+5. you can find out more about the data set by using the function summary():
+```{r}
+summary(data)
+```
+6. the following tables provide the counts and proportions of men and women by rank. The results show that the number of male professors is much higher than the number of women.  
+```{r echo=TRUE}
+tab <- table(data$sex, data$rank)
+knitr::kable(
+  head(tab[, 1:3], 3), caption = 'counts of men and women by rank'
+)
+tab2 <- prop.table(tab)
+knitr::kable(
+  head(tab2[, 1:3], 3), caption = 'proportions of men and women by rank'
+)
+```
+
+7. the following figure provides a histogram for years of service.
+```{r fig1, echo=TRUE, fig.cap="Histogram of years of service for both men and women"}
+hist(data$yrs.service, freq=FALSE, xlab="years of service",
+     ylab="proportional density", main="Histogram of years of service")
+lines(density(data$yrs.service), type="l", col="darkred")
+```
+
+8. Fig. 2 shows the boxplot for the variable _salary_ for all observed professors.  
+```{r fig2, echo=TRUE, fig.cap="Boxplot for salary of professors, including all observations"}
+boxplot(data.df$salary,
+        main = "Salaries for Professors, Salary in $",
+        xlab = "Amount in $",
+        ylab = "Numbers of Professors")
+```
+
+9. The salary for professors seperated by rank visualize Fig. 3. The observations with the rank _Prof_ have on avergae the highest salary followed by _AssocProf_ and _AsstProf_.
+```{r fig3, echo=TRUE, fig.cap="Boxplot for salary of professors by rank"}
+boxplot(data.df$salary ~data.df$rank,
+        main = "Salaries for Professors by Rank",
+        xlab = "Amount of Salary in $",
+        ylab = "Rank of Professor",
+        horizontal = TRUE)
+```
+
+10. The relationship between _salary_ for Professors and _years since PhD_ for all observations is displayed in Fig. 4. The salary is more similar in the first 10 years since PhD than after 10 years where the salary is very scattered. 
+```{r fig4, echo=TRUE, fig.cap="Plot which shows the salary of all observations vs years since PhD"}
+plot(data.df$salary, data.df$yrs.since.phd,
+     main = "Salaries for Professor against Years Since PhD",
+     xlab = "Salaries for Professors in $",
+     ylab = "Years Since PhD",
+     col = "blue")
+```
+
+11. The correlation for salary vs. years since PhD and for salary vs. years of service are shown in the following table. 
+```{r}
+num_data <- data[, sapply(data, is.numeric)]
+cor(num_data) #correlation cor.test()
+```
+
+12. The correlation shows the statistically significance. 
+```{r}
+cor.test(data$yrs.since.phd, data$salary)
+cor.test(data$yrs.service, data$salary)
+```
+
+13. The last figure displays all bivariate relationships of the given dataset "salaries.csv".
+```{r fig5, echo=TRUE, fig.cap="Visualization of all bivariate relationships"}
+corrplot(corr=cor(num_data), method ="ellipse")
+```
+
