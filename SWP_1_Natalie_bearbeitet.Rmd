@@ -6,48 +6,54 @@ output:
     fig_caption: true
 sansfont: times
 fontsize: 12pt
-fig_width: 6
-fig_heigth: 4
 
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
 ```
+\begin{center}
+Humboldt University Berlin 
 
-Humboldt University Berlin
-Customer Analytics and Customer Insights WS 2017/18
-by Prof. Dr. Daniel Klapper
-Group 9: Julia , Ishvarya Siddhat, Natalie Habib 
-Submitted at November 12, 2017
+Customer Analytics and Customer Insights WS 2017/18 
+by Prof. Dr. Daniel Klapper 
+
+Group 9: Julia , Ishvarya, Natalie Habib (587954) 
+
+Submitted at November 12, 2017 
+
+
+\end{center}
 
 1. The data set contains data about the salaries from professors. In total, there are 6 variables and 397 observations in the data set. The variables are _rank_, _discipline_, _yrs.since.phd_, _yrs.service_, _sex_ and _salary_. 
-```{r}
+```{r, echo=FALSE}
 library(car)
 library(corrplot)
 data <- Salaries
 
 dimensions <- dim(data)
 ```
-2. there are 19 professors who have more than 40 yeats of service, assuming the term \textit{professor} refers only to observations with rank == 'Prof'
+2. There are 19 professors who have more than 40 yeats of service, assuming the term \textit{professor} refers only to observations with rank == 'Prof'
 ```{r}
 data.df <- data.frame(data)
 num_of_profs <- sum(subset(data.df$rank == 'Prof', data.df$yrs.service > 40))
 ```
-3. assuming the rank is not specified, 54 people have salary larger than $150,000. 
+3. Assuming the rank is not specified, 54 people have salary larger than $150,000. 
 ```{r}
 salary <- nrow(subset(data, salary > 150000))
+salary
 ```
-4. the mean salary for professors with more than 20 years of service is $126,772.1 with the rank restricted to rank == 'Prof'
+4. The mean salary for professors with more than 20 years of service with the rank restricted to rank == 'Prof' is
 ```{r}
 mean_salary <- mean((subset(data$salary, data.df$rank == 'Prof', data.df$yrs.service > 20)))
+mean_salary
 ```
-5. you can find out more about the data set by using the function summary():
-```{r}
+5. You can find out more about the data set by using the function summary():
+```{r, echo=FALSE}
 summary(data)
 ```
-6. the following tables provide the counts and proportions of men and women by rank. The results show that the number of male professors is much higher than the number of women.  
-```{r echo=TRUE}
+6. The following tables 1 and 2 provide the counts and proportions of men and women by rank. The results show that the number of male professors is much higher than the number of women.  
+```{r, echo=FALSE}
 tab <- table(data$sex, data$rank)
 knitr::kable(
   head(tab[, 1:3], 3), caption = 'counts of men and women by rank'
@@ -58,23 +64,27 @@ knitr::kable(
 )
 ```
 
-7. the following figure provides a histogram for years of service.
-```{r fig1, echo=TRUE, fig.cap="Histogram of years of service for both men and women"}
-hist(data$yrs.service, freq=FALSE, xlab="years of service",
-     ylab="proportional density", main="Histogram of years of service")
+7. The following figure 1 provides a histogram for years of service.
+```{r fig1, fig.cap="Histogram of years of service for both men and women"}
+hist(data$yrs.service, 
+     freq=FALSE, 
+     xlab="years of service",
+     ylab="proportional density", 
+     main="Histogram of years of service")
 lines(density(data$yrs.service), type="l", col="darkred")
 ```
 
-8. Fig. 2 shows the boxplot for the variable _salary_ for all observed professors.  
-```{r fig2, echo=TRUE, fig.cap="Boxplot for salary of professors, including all observations"}
+8. Fig. 2 shows the boxplot for the variable _salary_ for all observed professors. The dispersion about the mean is high for salaries greater than the mean. Aove the Maximum are outliers. 
+```{r fig2, echo=FALSE, fig.cap="Boxplot for salary of professors, including all observations", fig.width=4,fig.height=5}
 boxplot(data.df$salary,
         main = "Salaries for Professors, Salary in $",
         xlab = "Amount in $",
         ylab = "Numbers of Professors")
 ```
 
-9. The salary for professors seperated by rank visualize Fig. 3. The observations with the rank _Prof_ have on avergae the highest salary followed by _AssocProf_ and _AsstProf_.
-```{r fig3, echo=TRUE, fig.cap="Boxplot for salary of professors by rank"}
+9. The salary for professors seperated by rank visualize Fig.3. The observations with the rank _Prof_ have the highest salary followed by _AssocProf_ and _AsstProf_. 
+
+```{r fig3, echo=FALSE, fig.cap="Boxplot for salary of professors by rank",fig.width=4,fig.height=3}
 boxplot(data.df$salary ~data.df$rank,
         main = "Salaries for Professors by Rank",
         xlab = "Amount of Salary in $",
@@ -83,7 +93,7 @@ boxplot(data.df$salary ~data.df$rank,
 ```
 
 10. The relationship between _salary_ for Professors and _years since PhD_ for all observations is displayed in Fig. 4. The salary is more similar in the first 10 years since PhD than after 10 years where the salary is very scattered. 
-```{r fig4, echo=TRUE, fig.cap="Plot which shows the salary of all observations vs years since PhD"}
+```{r fig4, echo=FALSE, fig.cap="Plot which shows the salary of all observations vs years since PhD",fig.width=4,fig.height=3}
 plot(data.df$salary, data.df$yrs.since.phd,
      main = "Salaries for Professor against Years Since PhD",
      xlab = "Salaries for Professors in $",
@@ -91,20 +101,20 @@ plot(data.df$salary, data.df$yrs.since.phd,
      col = "blue")
 ```
 
-11. The correlation for salary vs. years since PhD and for salary vs. years of service are shown in the following table. 
-```{r}
+11. The correlation for salary vs. years since PhD and for salary vs. years of service are shown in the following table. Between Years since PhD and salary is a higher correlation than between years since service and service. 
+```{r, echo=FALSE}
 num_data <- data[, sapply(data, is.numeric)]
 cor(num_data) #correlation cor.test()
 ```
 
-12. The correlation shows the statistically significance. 
-```{r}
+12. The Pearson's product-moment correlation shows the statistically significance. 
+```{r, echo=FALSE}
 cor.test(data$yrs.since.phd, data$salary)
 cor.test(data$yrs.service, data$salary)
 ```
 
 13. The last figure displays all bivariate relationships of the given dataset "salaries.csv".
-```{r fig5, echo=TRUE, fig.cap="Visualization of all bivariate relationships"}
+```{r fig5, echo=FALSE, fig.cap="Visualization of all bivariate relationships", fig.width=6,fig.height=6}
 corrplot(corr=cor(num_data), method ="ellipse")
 ```
 
