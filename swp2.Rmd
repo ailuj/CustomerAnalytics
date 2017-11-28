@@ -12,22 +12,25 @@ for(clm in salaries.tmp)
 {
   salaries$clm <- factor(clm)
 }
+salaries.df <- data.frame(salaries)
 
 library("data.table")
 library("gplots")
 library("corrplot")
 library(knitr)
-#library(xtable)
 library(car)
 library(lattice)
 library(coefplot)
+library(gpairs)
+library(grid)
+
 ```
 
 ## Special Workperformance 2
 
 The following text contains a descriptive analysis of the Salaries dataset, which contains the 6 variables Rank, Discipline, Years Since PhD, Years Since Service, Sex and Salary as well as 397 observations. Rank, Discipline and sex are categorial variables, Years Since PhD, Years Since Service and Salary are Integers. Remarkable about the Salary dataset is, that 90.18 percentage is male, that the salary is between 57,800 Euros and 231,545 Euros and that the Years Since Service differ between 0 and 60 years. 
 
-Calculating the mean salaries by rank and sex shows that male university employees with the rank _Professor_ have the highest mean with 127,120.82 Euros, followed by the male ???Association Professor??? with 94,869.70 Euros and the male _Assistant Professor_ with 81,311.46 Euros. Male employees mean is for all ranks higher than female employees mean, the salary for male employees is always above the mean and female's is always below the mean salary for each rank.
+Calculating the mean salaries by rank and sex shows that male university employees with the rank _Professor_ have the highest mean with 127,120.82 Euros, followed by the male _Association Professor_ with 94,869.70 Euros and the male _Assistant Professor_ with 81,311.46 Euros. Male employees mean is for all ranks higher than female employees mean, the salary for male employees is always above the mean and female's is always below the mean salary for each rank.
 
 ```{r, echo=FALSE} 
 mean.salaries <- aggregate(salary~sex+rank, salaries, mean)
@@ -48,6 +51,7 @@ boxplot(formula = salary ~ sex + rank,
         main = "Describing salary distribution by sex and rank",
         col = rainbow(2))
 ```
+
 
 The mean salary for female university employees is 101,002.4 Euros, which lays between the mean salary of rank A with 89,064.94 Euros and rank B with 112,234.52 Euros, hence the salary between the disciplines differ.
 
@@ -93,7 +97,23 @@ fit <- lm(formula = salary ~ sex + rank + discipline + yrs.service,
 summary(fit)
 ```
 
-Plot the coefficients for those effects.
+The observations of the salary of the dataset shows Figure 4 in a histogram. The shape of the data is optimized for linear regression with a data transformation using the log-function. 
+
+```{r, fig.cap="Transformed Salary with the log-function"}
+# theory http://fmwww.bc.edu/repec/bocode/t/transint.html
+salaries.df$salary <- log(salaries$salary)
+hist(salaries.df$salary, xlab="Salary in Euro")
+```
+
+Fig. 5 shows the linear model for salary as a response of sex, rank, discipline, and years since PhD. The summary fo the fit shows that the p-value of the ranks "Assistant Professor" and "Professor" as well as the discipline B are < 0.05, hence these explanatory variables are statistical significant, changes in their values are related to changes in the salary variable.
+
+```{r, fig.cap="Displaying the results of the linear model"}
+fit <- lm(formula = salary ~ sex + rank + discipline + yrs.service,
+          data = salaries.df) 
+summary(fit)
+```
+
+Fig. 6 shows the coefficients for those effects.
 
 ```{r coefficientPlot, fig.cap="Visualization of the coefficinets of the linear model"}
 coefplot(fit, intercept = FALSE,
