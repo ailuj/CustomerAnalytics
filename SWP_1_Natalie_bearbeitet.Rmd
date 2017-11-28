@@ -119,7 +119,7 @@ cor.test(data$yrs.since.phd, data$salary)
 cor.test(data$yrs.service, data$salary)
 ```
 
-13. The last figure displays all bivariate relationships of the given dataset "salaries.csv" and visualizes the results of 12.
+13. The last figure displays all bivariate relationships of the given dataset "salaries.csv" and visualizes the results of
 
 ```{r fig5, echo=FALSE, fig.cap="Visualization of all bivariate relationships", fig.width=6,fig.height=6}
 corrplot(corr=cor(num_data), method ="ellipse")
