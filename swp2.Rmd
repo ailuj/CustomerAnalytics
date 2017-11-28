@@ -1,7 +1,24 @@
 ---
-title: "Swp2_abgabe"
-output: pdf_document
+title: "Special Work Performance 2: Describing Data"
+geometry: margin=2cm
+output: 
+  pdf_document:
+    fig_caption: true
+sansfont: times
+fontsize: 12pt
 ---
+\begin{center}
+Humboldt University Berlin 
+
+Customer Analytics and Customer Insights WS 2017/18 
+by Prof. Dr. Daniel Klapper 
+
+\textbf{Group 9:}\\  
+\textbf{Natalie Habib}, 587954; 
+\textbf{Julia Dullin}, 587779; \\
+Submitted on November 28, 2017 
+
+\end{center}
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -19,14 +36,13 @@ library("gplots")
 library("corrplot")
 library(knitr)
 library(car)
+library(xtable)
 library(lattice)
 library(coefplot)
-library(gpairs)
-library(grid)
 
 ```
 
-## Special Workperformance 2
+## Mean Salaries
 
 The following text contains a descriptive analysis of the Salaries dataset, which contains the 6 variables Rank, Discipline, Years Since PhD, Years Since Service, Sex and Salary as well as 397 observations. Rank, Discipline and sex are categorial variables, Years Since PhD, Years Since Service and Salary are Integers. Remarkable about the Salary dataset is, that 90.18 percentage is male, that the salary is between 57,800 Euros and 231,545 Euros and that the Years Since Service differ between 0 and 60 years. 
 
@@ -48,28 +64,29 @@ boxplot(formula = salary ~ sex + rank,
         horizontal = TRUE,
         xlab = "Salaries in Euros",
         ylab = "Sex and rank of the university employees",
-        main = "Describing salary distribution by sex and rank",
         col = rainbow(2))
 ```
 
 
-The mean salary for female university employees is 101,002.4 Euros, which lays between the mean salary of rank A with 89,064.94 Euros and rank B with 112,234.52 Euros, hence the salary between the disciplines differ.
+According to the proportions, there are slightly more women in discipline _B_ than in discipline _A_. However, the same applies to men. This could mean that the number of employees in total in discipline _A_ is simply lower than the number of employees in discipline _B_. Because of that, it is not possible to draw a conclusion on whether the number of women differs based on discipline. 
 
-```{r, echo=FALSE}
-salaries.fem.dt <- data.table(subset(salaries, salaries$sex == "Female"))
-kable(salaries.fem.dt[, mean(salary), by = discipline], digits = 3, caption = "proportions of salaries by sex")
+```{r, echo=FALSE, warning=FALSE}
+salary.discipline <- prop.table(table(salaries$sex, salaries$discipline))
+kable(ftable(salary.discipline), digits = 3, caption = "proportions of women by discipline")
+
 ```
 
 ## Analysis of the Salary data with ANOVA
 
-The mean salary for men and women among university employees is different. The one-way ANOVA displayed in figure 3 shows that the F value is 7.74 and the p-value is low, less than 0.05. Hence, the conclusion is that the alternative hypothesis is accepted, the means of salaries for men and women are not equal, they are different.
+The mean salary for men and women among university employees is different. The one-way ANOVA displayed in table 3 shows that the F value is 7.738 and the p-value is very low --- less than 0.05. Hence, the conclusion is that the alternative hypothesis is accepted, the means of salaries for men and women are not equal, they are different.
 
-```{r anova, echo=FALSE, fig.cap="Displaying the results of the one-way ANOVA test"}
+```{r anova, echo=FALSE}
 seg.aov.salary <- aov(salary ~ sex, data = salaries) 
 aov.salary <- anova(seg.aov.salary)
+kable(aov.salary, digits = 3, caption = "the results of the one-way ANOVA test")
 ```
 
-The turkey post hoc test shows that the difference between salaries for men and women is statistical significant. The p-value is p-value < 0.05. 
+The turkey post hoc test in figure 2 shows that the difference between salaries for men and women is statistically significant, since the p-value is smaller than 0.05. 
 
 ```{r anovaGraph, echo=FALSE, fig.cap="Testing and visualizing the ANOVA results on statistical signicficance"}
 tuk <- TukeyHSD(seg.aov.salary)
@@ -78,44 +95,37 @@ plot(tuk)
 
 ## Linear model of the salary dataset
 
-Visualize salary. Should it be transformed? If so, how? And if so, do that and include as a new variable. 
+In order to bring salary closer to a normal distribution, salary was transformed using a log-function. Figure 3 shows the distribution of salary before transformation.
 
-```{r transformationSalary, fig.cap="Plotting the salary of all observations"}
+```{r transformationSalary, echo=FALSE, fig.cap="Plotting the salary of all observations"}
 # theory http://fmwww.bc.edu/repec/bocode/t/transint.html
 plot(salaries$salary)
 transLog.salary <- log10(salaries$salary)
-transqrt.salary <- sqrt(salaries$salary)
-plot(transLog.salary)
-plot(transqrt.salary)
+#transqrt.salary <- sqrt(salaries$salary)
 ```
 
-Fit a linear model for salary as a response of sex, rank, discipline, and years since PhD. Which effects are statistically significant? 
 
-```{r linearModel, fig.cap="Displaying the results of the linear model"}
-fit <- lm(formula = salary ~ sex + rank + discipline + yrs.service,
-          data = salaries) 
-summary(fit)
-```
+The observations of the salary of the dataset shows a histogram in figure 4. The shape of the data is optimized for linear regression with a data transformation using the log-function. 
 
-The observations of the salary of the dataset shows Figure 4 in a histogram. The shape of the data is optimized for linear regression with a data transformation using the log-function. 
-
-```{r, fig.cap="Transformed Salary with the log-function"}
+```{r, echo=FALSE, fig.cap="Transformed Salary with the log-function"}
 # theory http://fmwww.bc.edu/repec/bocode/t/transint.html
 salaries.df$salary <- log(salaries$salary)
 hist(salaries.df$salary, xlab="Salary in Euro")
 ```
 
-Fig. 5 shows the linear model for salary as a response of sex, rank, discipline, and years since PhD. The summary fo the fit shows that the p-value of the ranks "Assistant Professor" and "Professor" as well as the discipline B are < 0.05, hence these explanatory variables are statistical significant, changes in their values are related to changes in the salary variable.
+As shown in table 4, the standard error of the rank _AsstProf_ is the highest, which means that salaries for assistant professors differ by $167.315. The t-value indicates, whether a relationship between salary and e.g. sex or rank exists, whereas the value 0 means there is no relationship between the variables. There seems to be a clear relationship between salary and the rank _Prof_, as the t value is 9.290. With the value of _years since phd_ being so close to 0, there does not seem to be a relationship between _years since phd_ and salary.
 
-```{r, fig.cap="Displaying the results of the linear model"}
-fit <- lm(formula = salary ~ sex + rank + discipline + yrs.service,
-          data = salaries.df) 
-summary(fit)
+```{r linearModel, echo=FALSE}
+fit <- lm(formula = salary ~ sex + rank + discipline + yrs.since.phd,
+          data = salaries) 
+model <- data.frame(xtable(summary(fit)))
+kable(model, caption = "summary of the linear model", digits = 3)
+
 ```
 
-Fig. 6 shows the coefficients for those effects.
+Figure 5 shows the coefficients for each variable. The figure shows once again, that there is no relationship between salary and male employees. However, the relationship between salary and employees with rank _Professor_ is evident.
 
-```{r coefficientPlot, fig.cap="Visualization of the coefficinets of the linear model"}
+```{r coefficientPlot, fig.cap="Visualization of the coefficinets of the linear model", echo=FALSE}
 coefplot(fit, intercept = FALSE,
          outerCI = 1.96,
          lwdOuter = 1.5)
