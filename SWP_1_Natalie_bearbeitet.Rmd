@@ -18,14 +18,15 @@ Humboldt University Berlin
 Customer Analytics and Customer Insights WS 2017/18 
 by Prof. Dr. Daniel Klapper 
 
-Group 9:  
-
-Submitted at November 12, 2017 
-
+\textbf{Group 9:}\\  
+\textbf{Natalie Habib}, 587954; 
+\textbf{Ishvarya Siddharth}, 584210; 
+\textbf{Julia Dullin}, 587779; \\
+Submitted on November 13, 2017 
 
 \end{center}
 
-1. The data set contains data about the salaries from professors. In total, there are 6 variables and 397 observations in the data set. The variables are _rank_, _discipline_, _yrs.since.phd_, _yrs.service_, _sex_ and _salary_. 
+1. The data set contains data about the salaries of professors. In total, there are 6 variables and 397 observations in the data set. The variables are _rank_, _discipline_, _yrs.since.phd_, _yrs.service_, _sex_ and _salary_. 
 ```{r, echo=FALSE}
 library(car)
 library(corrplot)
@@ -33,7 +34,7 @@ data <- Salaries
 
 dimensions <- dim(data)
 ```
-2. There are 19 professors who have more than 40 yeats of service, assuming the term \textit{professor} refers only to observations with rank == 'Prof'
+2. There are 19 professors who have more than 40 years of service, assuming the term _professor_ refers only to observations with _rank == 'Prof'_
 ```{r}
 data.df <- data.frame(data)
 num_of_profs <- sum(subset(data.df$rank == 'Prof', data.df$yrs.service > 40))
@@ -43,7 +44,7 @@ num_of_profs <- sum(subset(data.df$rank == 'Prof', data.df$yrs.service > 40))
 salary <- nrow(subset(data, salary > 150000))
 salary
 ```
-4. The mean salary for professors with more than 20 years of service with the rank restricted to rank == 'Prof' is
+4. The mean salary for professors with more than 20 years of service with the rank restricted to _rank == 'Prof'_ is
 ```{r}
 mean_salary <- mean((subset(data$salary, data.df$rank == 'Prof', data.df$yrs.service > 20)))
 mean_salary
@@ -52,7 +53,7 @@ mean_salary
 ```{r, echo=FALSE}
 summary(data)
 ```
-6. The following tables 1 and 2 provide the counts and proportions of men and women by rank. The results show that the number of male professors is much higher than the number of women.  
+6. The following tables 1 and 2 provide the counts and proportions of men and women by rank. The results show that the number of male professors is significantly higher than the number of women.  
 ```{r, echo=FALSE}
 tab <- table(data$sex, data$rank)
 knitr::kable(
@@ -64,8 +65,9 @@ knitr::kable(
 )
 ```
 
-7. The following figure 1 provides a histogram for years of service.
-```{r fig1, fig.cap="Histogram of years of service for both men and women"}
+7. The following figure 1 provides a histogram for _years of service_. The number of professors decreases the more time they have been in service.
+
+```{r fig1, fig.cap="Histogram of years of service for both men and women", fig.align="center", fig.width=5,fig.height=4}
 hist(data$yrs.service, 
      freq=FALSE, 
      xlab="years of service",
@@ -74,7 +76,8 @@ hist(data$yrs.service,
 lines(density(data$yrs.service), type="l", col="darkred")
 ```
 
-8. Fig. 2 shows the boxplot for the variable _salary_ for all observed professors. The dispersion about the mean is high for salaries greater than the mean. Aove the Maximum are outliers. 
+8. Fig.2 shows the boxplot for the variable _salary_ for all observed professors. The dispersion about the mean is high for salaries greater than the mean. Aove the Maximum are outliers.
+
 ```{r fig2, echo=FALSE, fig.cap="Boxplot for salary of professors, including all observations", fig.width=4,fig.height=5}
 boxplot(data.df$salary,
         main = "Salaries for Professors, Salary in $",
@@ -82,9 +85,9 @@ boxplot(data.df$salary,
         ylab = "Numbers of Professors")
 ```
 
-9. The salary for professors seperated by rank visualize Fig.3. The observations with the rank _Prof_ have the highest salary followed by _AssocProf_ and _AsstProf_. 
+9. The salary for professors seperated by rank is visualized in Fig.3. The observations with the rank _Prof_ have the highest salary followed by _AssocProf_ and _AsstProf_. _Prof_ is also the only rank with outliers on the upper end.
 
-```{r fig3, echo=FALSE, fig.cap="Boxplot for salary of professors by rank",fig.width=4,fig.height=3}
+```{r fig3, echo=FALSE, fig.cap="Boxplot for salary of professors by rank",fig.width=5,fig.height=6}
 boxplot(data.df$salary ~data.df$rank,
         main = "Salaries for Professors by Rank",
         xlab = "Amount of Salary in $",
@@ -92,7 +95,8 @@ boxplot(data.df$salary ~data.df$rank,
         horizontal = TRUE)
 ```
 
-10. The relationship between _salary_ for Professors and _years since PhD_ for all observations is displayed in Fig. 4. The salary is more similar in the first 10 years since PhD than after 10 years where the salary is very scattered. 
+10. The relationship between _salary_ for professors and _years since PhD_ for all observations is displayed in Fig. 4. The salary is more similar in the first 10 years since PhD than after 10 years where the salary is very scattered.
+
 ```{r fig4, echo=FALSE, fig.cap="Plot which shows the salary of all observations vs years since PhD",fig.width=4,fig.height=3}
 plot(data.df$salary, data.df$yrs.since.phd,
      main = "Salaries for Professor against Years Since PhD",
@@ -101,19 +105,22 @@ plot(data.df$salary, data.df$yrs.since.phd,
      col = "blue")
 ```
 
-11. The correlation for salary vs. years since PhD and for salary vs. years of service are shown in the following table. Between Years since PhD and salary is a higher correlation than between years since service and service. 
+11. The correlation for salary vs. years since PhD and for salary vs. years of service are shown in the following table. Between Years since PhD and salary is a higher correlation than between years of service and salary. 
+
 ```{r, echo=FALSE}
 num_data <- data[, sapply(data, is.numeric)]
 cor(num_data) #correlation cor.test()
 ```
 
-12. The Pearson's product-moment correlation shows the statistically significance. 
+12. The Pearson's product-moment correlation shows the statistical significance. The correlation between _years since PhD_ and _salary_ is 0.4192311, which indicates a weak to moderate positive relationship, whereas the correlation between _years of service_ and _salary_ is 0.3347447, which indicates a weak positive relationship.
+
 ```{r, echo=FALSE}
 cor.test(data$yrs.since.phd, data$salary)
 cor.test(data$yrs.service, data$salary)
 ```
 
-13. The last figure displays all bivariate relationships of the given dataset "salaries.csv".
+13. The last figure displays all bivariate relationships of the given dataset "salaries.csv" and visualizes the results of 12.
+
 ```{r fig5, echo=FALSE, fig.cap="Visualization of all bivariate relationships", fig.width=6,fig.height=6}
 corrplot(corr=cor(num_data), method ="ellipse")
 ```
