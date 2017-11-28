@@ -12,6 +12,7 @@ for(clm in salaries.tmp)
 {
   salaries$clm <- factor(clm)
 }
+salaries.df <- data.frame(salaries)
 
 library("data.table")
 library("gplots")
@@ -19,6 +20,8 @@ library("corrplot")
 library(car)
 library(lattice)
 library(coefplot)
+library(gpairs)
+library(grid)
 ```
 
 ## Special Workperformance 2
@@ -74,26 +77,23 @@ plot(tuk)
 
 ## Linear model of the salary dataset
 
-Visualize salary. Should it be transformed? If so, how? And if so, do that and include as a new variable. 
+The observations of the salary of the dataset shows Figure 4 in a histogram. The shape of the data is optimized for linear regression with a data transformation using the log-function. 
 
-```{r transformationSalary, fig.cap="Fig. 4: Plotting the salary of all observations"}
+```{r transformationSalary, fig.cap="Fig. 4: Transformed Salary with the log-function"}
 # theory http://fmwww.bc.edu/repec/bocode/t/transint.html
-plot(salaries$salary)
-transLog.salary <- log10(salaries$salary)
-transqrt.salary <- sqrt(salaries$salary)
-plot(transLog.salary)
-plot(transqrt.salary)
+salaries.df$salary <- log(salaries$salary)
+hist(salaries.df$salary, xlab="Salary in Euro")
 ```
 
-Fit a linear model for salary as a response of sex, rank, discipline, and years since PhD. Which effects are statistically significant? 
+Fig. 5 shows the linear model for salary as a response of sex, rank, discipline, and years since PhD. The summary fo the fit shows that the p-value of the ranks "Assistant Professor" and "Professor" as well as the discipline B are < 0.05, hence these explanatory variables are statistical significant, changes in their values are related to changes in the salary variable.
 
 ```{r linearModel, fig.cap="Fig. 5: Displaying the results of the linear model"}
 fit <- lm(formula = salary ~ sex + rank + discipline + yrs.service,
-          data = salaries) 
+          data = salaries.df) 
 summary(fit)
 ```
 
-Plot the coefficients for those effects.
+Fig. 6 shows the coefficients for those effects.
 
 ```{r coefficientPlot, fig.cap="Fig. 6: Visualization of the coefficinets of the linear model"}
 coefplot(fit, intercept = FALSE,
