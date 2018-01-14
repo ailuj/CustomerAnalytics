@@ -10,13 +10,13 @@ fontsize: 12pt
 \begin{center}
 Humboldt University Berlin 
 
-Customer Analytics and Customer Insights WS 2017/18 
-by Prof. Dr. Daniel Klapper 
+course name & semester
+by Prof. Dr. xxxxxxx 
 
-\textbf{Group 9:}\\  
-\textbf{Natalie Habib}, 587954; 
-\textbf{Julia Dullin}, 587779; \\
-Submitted on November 28, 2017 
+\textbf{Group x:}\\  
+\textbf{XXXXX}, 12345; 
+\textbf{XXXXX}, 84579; \\
+Submitted on November xx, xxxx 
 
 \end{center}
 
