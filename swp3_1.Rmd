@@ -1,0 +1,95 @@
+---
+title: "Special Work Performance 3: Diving into the Data"
+author: 'Natalie und Julia'
+geometry: margin=2cm
+output: 
+  pdf_document:
+    fig_caption: true
+    keep_tex: yes
+sansfont: times
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+options(repos=c(CRAN = "https://cran.uni-muenster.de/"))
+```
+
+\begin{center}
+Humboldt University Berlin 
+
+course name und semester
+by Prof. Dr. xxxxxxx 
+
+\textbf{Group x:}\\  
+\textbf{XXXXX}, 12345; 
+\textbf{XXXXX}, 84579; \\
+Submitted on November xx, xxxx 
+
+\end{center}
+
+```{r dataset, echo=FALSE}
+## set environment
+wdir <- "C:\\Users\\Natalie\\Dropbox\\WiSe201718\\Customer Analytics and Customer Insights\\Data"
+setwd(wdir)
+install.packages("psych"); library(psych)
+
+## functions
+std_rank <- function(x){
+  return(sum(x)/(50*7))
+}
+
+## Reading data, once table "Attribute Rating", twice "Direct Preference Rating"
+bars <- read.csv("attribute_evaluation_choc_bars.csv", sep = ";", header = TRUE)
+rating <- read.csv("bars_rating.csv", sep = ";", header = TRUE)
+
+rank <- list()
+rating$Person <- NULL
+rank <- sort(round(sapply(rating, std_rank), digits = 2), decreasing = TRUE)
+
+## Cleaning sample bars
+bars_mean <- list()
+bars_mean <- sapply(na.omit(bars), mean)
+
+for(col in 1:length(bars)) {
+  #bars[[paste(col, "missing", sep = "_")]] <- ifelse(is.na(bars[[col]]), 1, 0)
+  bars[[col]] <- ifelse(is.na(bars[[col]]), bars_mean[col], bars[[col]])
+}
+```
+
+## Introduction of the Data Set "Chocolate Bars"
+
+The given data set is about 10 different chocolate bar products. Four tables organize the accquired data in the tables "General Consumption", "Direct Preference Rating", "Attribute Rating" and "Social Demographic Questions". 15 participants evaluate 10 different choclate bars by 13 attributes. The participants rate directly their preferences of the chocolate bars on a scale from 1 till 7. The most popular bar is "Kinderriegel", the least popular one "Mars" as shown in figure 1.
+
+```{r rank, echo=FALSE}
+# main : rankings of chocolat bars
+rank <- sort(round(sapply(rating, std_rank), digits = 2), decreasing = TRUE)
+```
+
+## Describing the Attributes of the Chocolate Bars
+
+# Factor Analysis
+
+The data reduction technique Factor Analysis investigates the relationships of the attributes by collapsing a large number of variables into a few interpretable underlying factors, the latent variables. The participants weight multiple variables similar because they belong to the same latent variable. 
+In the first step, the data set "Attribute Rating", which contains the evaluation of each attribute per chocolat bar on a scale from 1 till 5 from 50 participants, is loaded and cleaned. The attribute's mean over all 50 observations replaces missing values. 
+
+```{r fa, echo=FALSE}
+## fa for each of the 10 chocolat products 
+# here for the first chocolat product
+b1_attr <- bars[,2:14]
+cor(b1_attr)
+#corrplot(b1_attr, method = "pie", type = "upper")
+plot(eigen(cor(b1_attr))$values, type = "b", 
+     main = "Plotting variances of Eigenvalues",
+     xlab = "Attributes of Snickers",
+     ylab = "Variance")   # use 6 factors
+
+b1.fa <- fa(b1_attr, nfactors = 3, rotate = "variance", cut = 0.3)
+fa.diagram(b1.fa)
+#data.frame(b1.fa$scores)  #to-do: name columns
+```
+
+# Report and Interpret Results
+
+The factor loading score shows now clear factorizing for the chocolate bar Snickers.
