@@ -73,23 +73,31 @@ rank <- sort(round(sapply(rating, std_rank), digits = 2), decreasing = TRUE)
 
 The data reduction technique Factor Analysis investigates the relationships of the attributes by collapsing a large number of variables into a few interpretable underlying factors, the latent variables. The participants weight multiple variables similar because they belong to the same latent variable. 
 In the first step, the data set "Attribute Rating", which contains the evaluation of each attribute per chocolat bar on a scale from 1 till 5 from 50 participants, is loaded and cleaned. The attribute's mean over all 50 observations replaces missing values. 
+-Step 2: Examine correlation matrix
+-Step 3: Determine number of factors by eigenvalue >1
+-Step 4: Choose a factor rotation model, here rotation = "varimax"
+-Step 5: fit the model and interpret the factors, assign them with names
+-Step 6: Repeat and compare with different factor levels, rotation method
+-Step 7: Use factor scores for respondents, factor scores show the best estimate for the latent variable
 
 ```{r fa, echo=FALSE}
 ## fa for each of the 10 chocolat products 
-# here for the first chocolat product
-b1_attr <- bars[,2:14]
-cor(b1_attr)
-#corrplot(b1_attr, method = "pie", type = "upper")
-plot(eigen(cor(b1_attr))$values, type = "b", 
-     main = "Plotting variances of Eigenvalues",
-     xlab = "Attributes of Snickers",
-     ylab = "Variance")   # use 6 factors
+# here for all 10 chocolat products, one fa per chocolat product
+ctr <- 2
+while(ctr < length(bars)) {
+  last_attr <-ctr+12
+  bar_attr <- bars[,ctr:last_attr]
+  #cor(bar_attr)
+  nfac <- length(eigen(cor(b1_attr))$values[eigen(cor(b1_attr))$values > 1.0])
+  b.fa <- fa(bar_attr, nfactors = nfac, rotate = "varimax", cut = 0.3)
+  fa.diagram(b.fa)
+  data.frame(b.fa$scores)[1:2,]
+  
+  ctr <- last_attr+1
+}
 
-b1.fa <- fa(b1_attr, nfactors = 3, rotate = "variance", cut = 0.3)
-fa.diagram(b1.fa)
-#data.frame(b1.fa$scores)  #to-do: name columns
 ```
 
 # Report and Interpret Results
 
-The factor loading score shows now clear factorizing for the chocolate bar Snickers.
+
