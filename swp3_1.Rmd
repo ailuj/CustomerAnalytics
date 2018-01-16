@@ -147,7 +147,7 @@ The tables show that the chocolate bars Snickers, Twix, Duplo and KitKat are rat
 
 # Factor Analysis
 
-The data reduction technique Factor Analysis investigates the relationships of the attributes by collapsing a large number of variables into a few interpretable underlying factors, the latent variables. The participants weight multiple variables similar because they belong to the same latent variable. The question that should be answered with factor analysis in the following analysis is "What are the important attributes in general?". The findings show which factors the consumers like and which should be improved. 
+The data reduction technique Factor Analysis investigates the relationships of the attributes by collapsing a large number of variables into a few interpretable underlying factors, the latent variables. The participants weight multiple variables similar because they belong to the same latent variable. The question that should be answered with factor analysis in the following analysis is "What are the important attributes in general of a chocolat product?". The findings show which factors have importance for the consumer. 
 Firstly, the data set is cleaned and analyzed before using the factor analysis function. The data set "Attribute Rating", which contains the evaluation of each attribute per chocolat bar on a scale from 1 till 5 from 50 participants, is loaded and cleaned. The cleaning program calculates the attribute's mean over all 10 chocolate products. The result is a 50 by 13 matrix.  
 
 Factor analysis assign each variable to a latent variable, the factor, based on their correlation. The value of the eigenvalues of the data set as a matrix show how many variables the eigenvector explains. Fig. B1 shows the eigenvalue of each variable. 5 variables have a eigenvalue > 1. The model has a good fit with 5 or less factors.
@@ -170,25 +170,27 @@ attributeRating_df <- attributeRating_df %>%
   arrange(brand)
 
 attributeRating_df[, 3:15] <- sapply(attributeRating_df[, 3:15], as.numeric)
-attributeRating_df$brand<-factor(attributeRating_df$brand)
-levels(attributeRating_df$brand)<-c("Snickers", "Kinder Bueno", "Twix", "Mars", "KitKat",
+attributeRating_df$brand <- factor(attributeRating_df$brand)
+levels(attributeRating_df$brand) <- c("Snickers", "Kinder Bueno", "Twix", "Mars", "KitKat",
                                     "Bounty", "Kinder Riegel", "Balisto Korn-Mix", "Lion",
                                     "Duplo")
 
 #summary(attributeRating_df[, 3:15])
-describe(attributeRating_df[, 3:15], na.rm = TRUE)
+#describe(attributeRating_df[, 3:15], na.rm = TRUE)
 
 sort(round(eigen(cor(attributeRating_df[,3:15], use = "complete.obs"))$values, 2), decreasing = TRUE) #result: 5 factors EV > 1
 ```
 
 # Report Results
 
-The model best fit is with 4 factors, using the method "minres" and the orthogonal rotation model. One variable is assigned to one factor with the lower theshold at 0.3. The first factor induces the attributes image, commercial and wrapping. The assigned name is "Packaging". The second factor induces the attributes sweet, chocolaty and creamy. The assigned name is "Taste". The third factor induces the attributes addiction and rich, the name of the factor is "Frequency of eating". The fourth factor induces the variables handy, accessible and calorie. The assigned name is "Usability". The attribute "calorie" is assigned with 0.3 which explains the weak explanation fit to the factor "Usabilty". The attributes crunchy and healthful have no assignment to one factor, hence they are neglected. Fig. B3 shows the scores of the first two factors "Packaging" and "Taste". 
+The model best fit is with 4 factors, using the method "minres" and the orthogonal rotation model. One variable is assigned to one factor with the lower theshold at 0.3. The first factor induces the attributes image, rich, accessible and wrapping. The assigned name is "Packaging". The attribute rich is assigned with 0.3 which explains the weak relationship to the factor "Packaging". The second factor induces the attributes image and commercial. The assigned name is "Brand". The third factor induces the attributes chocolaty, addiction and sweet, the name of the factor is "Addictive Taste". The fourth factor induces the variables creamy and crunchy. The assigned name is "General Taste". The fifth factor induces the attributes healthful and calorie. The assigned name is "Healthawareness". Healthful is assigned with 0.6 and calorie with -0.5. It shows that the two attributes are antiproportional assigned to the factor. Fig. B2 shows the scores of the first two factors "Packaging" and "Brand". 
 
 ```{r fa, echo=FALSE, fig.cap="Fig. B2: Factor scores of the factors Packaging and Taste"}
-pies.fa <- fa(attributeRating_df[3:15], missing = TRUE, nfactors = 4, rotate = "varimax", cut = 0.3)
-fa.diagram(pies.fa)
-fa.scores <- data.frame(pies.fa$scores)[,1:2]
+pies.fa <- fa(attributeRating_df[3:15], missing = TRUE, nfactors = 5, rotate = "varimax", cut = 0.3)
+#fa.diagram(pies.fa)
+colnames(pies.fa$scores)[1] <- "Packaging"
+colnames(pies.fa$scores)[2] <- "Brand"
+fa.scores <- data.frame(pies.fa$scores)[1:10,1:2]
 round(fa.scores, 2)
 ```
 
