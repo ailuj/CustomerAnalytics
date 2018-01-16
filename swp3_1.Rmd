@@ -62,11 +62,12 @@ for(col in 1:length(bars)) {
 
 ## Introduction of the Data Set "Chocolate Bars"
 
-The given data set is about 10 different chocolate bar products. Four tables organize the accquired data in the tables "General Consumption", "Direct Preference Rating", "Attribute Rating" and "Social Demographic Questions". 15 participants evaluate 10 different choclate bars by 13 attributes. The participants rate directly their preferences of the chocolate bars on a scale from 1 till 7. The most popular bar is "Kinderriegel", the least popular one "Mars" as shown in figure 1.
+The given data set is about 10 different chocolate bar products. Four tables organize the accquired data in the tables "General Consumption", "Direct Preference Rating", "Attribute Rating" and "Social Demographic Questions". 50 participants evaluate the 10 different choclate bars Balisto Korn-Mix, Bounty, Duplo, Kinder Bueno, Kinder Riegel, KitKat, Lion, Mars by the 13 attributes sweet, handy, addiction, accessible, chocolaty, creamy, rich, wrapping, commercial, image, crunchy, healthful and calorie. The participants rate directly their preferences of the chocolate bars on a scale from 1 till 7. The most popular bar is "Kinderriegel", the least popular one "Mars" as shown in figure 1.
 
 ```{r rank, echo=FALSE, fig.cap="Figure 1: Rank of the 10 chocolat products"}
 # main : rankings of chocolat bars
 rank <- sort(round(sapply(rating, std_rank), digits = 2), decreasing = TRUE)
+rank
 ```
 
 ## Describing the Attributes of the Chocolate Bars
