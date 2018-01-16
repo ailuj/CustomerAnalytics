@@ -109,7 +109,7 @@ sort(round(eigen(cor(attributeRating_df[,3:15], use = "complete.obs"))$values, 2
 
 The model best fit is with 4 factors, using the method "minres" and the orthogonal rotation model. One variable is assigned to one factor with the lower theshold at 0.3. The first factor induces the attributes image, commercial and wrapping. The assigned name is "Packaging". The second factor induces the attributes sweet, chocolaty and creamy. The assigned name is "Taste". The third factor induces the attributes addiction and rich, the name of the factor is "Frequency of eating". The fourth factor induces the variables handy, accessible and calorie. The assigned name is "Usability". The attribute "calorie" is assigned with 0.3 which explains the weak explanation fit to the factor "Usabilty". The attributes crunchy and healthful have no assignment to one factor, hence they are neglected. Fig. B3 shows the scores of the first two factors "Packaging" and "Taste". 
 
-```{r fa, echo=FALSE, fig.cap="Fig. B2: Factor scores of the factors "Packaging" and "Taste"}
+```{r fa, echo=FALSE, fig.cap="Fig. B2: Factor scores of the factors Packaging and Taste"}
 pies.fa <- fa(attributeRating_df[3:15], missing = TRUE, nfactors = 4, rotate = "varimax", cut = 0.3)
 fa.diagram(pies.fa)
 fa.scores <- data.frame(pies.fa$scores)[,1:2]
