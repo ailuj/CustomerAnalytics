@@ -62,7 +62,7 @@ for(col in 1:length(bars)) {
 
 The given data set is about 10 different chocolate bar products. Four tables organize the accquired data in the tables "General Consumption", "Direct Preference Rating", "Attribute Rating" and "Social Demographic Questions". 15 participants evaluate 10 different choclate bars by 13 attributes. The participants rate directly their preferences of the chocolate bars on a scale from 1 till 7. The most popular bar is "Kinderriegel", the least popular one "Mars" as shown in figure 1.
 
-```{r rank, echo=FALSE}
+```{r rank, echo=FALSE, fig.cap="Figure 1: Rank of the 10 chocolat products"}
 # main : rankings of chocolat bars
 rank <- sort(round(sapply(rating, std_rank), digits = 2), decreasing = TRUE)
 ```
@@ -76,7 +76,7 @@ Firstly, the data set is cleaned and analyzed before using the factor analysis f
 
 Factor analysis assign each variable to a latent variable, the factor, based on their correlation. The value of the eigenvalues of the data set as a matrix show how many variables the eigenvector explains. Fig. B1 shows the eigenvalue of each variable. 5 variables have a eigenvalue > 1. The model has a good fit with 5 or less factors.
 
-```{r eigenvalue, echo=FALSE}
+```{r eigenvalue, echo=FALSE, fig.cap="Fig. B1: Sorted list of the eigenvalues of the Participants-Attribute Matrix"}
 if(!require("tidyverse")) install.packages("tidyverse"); library("tidyverse") # load the package
 if(!require("lavaan")) install.packages("lavaan",dependencies=T); library("lavaan") # load the package
 if(!require("semTools")) install.packages("semTools", dependencies=T); library("semTools") # load the package
@@ -103,14 +103,13 @@ levels(attributeRating_df$brand)<-c("Snickers", "Kinder Bueno", "Twix", "Mars", 
 describe(attributeRating_df[, 3:15], na.rm = TRUE)
 
 sort(round(eigen(cor(attributeRating_df[,3:15], use = "complete.obs"))$values, 2), decreasing = TRUE) #result: 5 factors EV > 1
-
 ```
 
 # Report Results
 
-The model best fit is with 4 factors, using the method "minres" and the orthogonal rotation model. One variable is assigned to one factor with the lower theshold at 0.3. The first factor induces the attributes image, commercial and wrapping. The assigned name is "Packaging". The second factor induces the attributes sweet, chocolaty and creamy. The assigned name is "Taste". The third factor induces the attributes addiction and rich, the name of the factor is "Frequency of eating". The fourth factor induces the variables handy, accessible and calorie. The assigned name is "Usability". The attribute "calorie" is assigned with 0.3 which explains the weak explanation fit to the factor "Usabilty" Figrue B2 shows the scores for the first two factors. The attributes crunchy and healthful have no assignment to one factor, hence they are neglected. Fig. B3 shows the scores of the first two factors "Packaging" and "Taste". 
+The model best fit is with 4 factors, using the method "minres" and the orthogonal rotation model. One variable is assigned to one factor with the lower theshold at 0.3. The first factor induces the attributes image, commercial and wrapping. The assigned name is "Packaging". The second factor induces the attributes sweet, chocolaty and creamy. The assigned name is "Taste". The third factor induces the attributes addiction and rich, the name of the factor is "Frequency of eating". The fourth factor induces the variables handy, accessible and calorie. The assigned name is "Usability". The attribute "calorie" is assigned with 0.3 which explains the weak explanation fit to the factor "Usabilty". The attributes crunchy and healthful have no assignment to one factor, hence they are neglected. Fig. B3 shows the scores of the first two factors "Packaging" and "Taste". 
 
-```{r fa, echo=FALSE}
+```{r fa, echo=FALSE, fig.cap="Fig. B2: Factor scores of the factors "Packaging" and "Taste"}
 pies.fa <- fa(attributeRating_df[3:15], missing = TRUE, nfactors = 4, rotate = "varimax", cut = 0.3)
 fa.diagram(pies.fa)
 fa.scores <- data.frame(pies.fa$scores)[,1:2]
@@ -118,13 +117,3 @@ round(fa.scores, 2)
 ```
 
 # Interpret results
-
-
-
-# Appendix
-
-```{r}
-pies.fa <- fa(attributeRating_df[3:15], missing = TRUE, nfactors = 4, rotate = "varimax", cut = 0.3)
-fa.diagram(pies.fa)
-```
-
