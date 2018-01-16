@@ -1,5 +1,5 @@
 ---
-title: "Special Work Performance 3: Diving into the Data"
+title: "Special Work Performance 3: Reducing Data Complexity"
 author: 'Natalie und Julia'
 geometry: margin=2cm
 output: 
@@ -71,33 +71,60 @@ rank <- sort(round(sapply(rating, std_rank), digits = 2), decreasing = TRUE)
 
 # Factor Analysis
 
-The data reduction technique Factor Analysis investigates the relationships of the attributes by collapsing a large number of variables into a few interpretable underlying factors, the latent variables. The participants weight multiple variables similar because they belong to the same latent variable. 
-In the first step, the data set "Attribute Rating", which contains the evaluation of each attribute per chocolat bar on a scale from 1 till 5 from 50 participants, is loaded and cleaned. The attribute's mean over all 50 observations replaces missing values. 
--Step 2: Examine correlation matrix
--Step 3: Determine number of factors by eigenvalue >1
--Step 4: Choose a factor rotation model, here rotation = "varimax"
--Step 5: fit the model and interpret the factors, assign them with names
--Step 6: Repeat and compare with different factor levels, rotation method
--Step 7: Use factor scores for respondents, factor scores show the best estimate for the latent variable
+The data reduction technique Factor Analysis investigates the relationships of the attributes by collapsing a large number of variables into a few interpretable underlying factors, the latent variables. The participants weight multiple variables similar because they belong to the same latent variable. The question that should be answered with factor analysis in the following analysis is "What are the important attributes in general?". The findings show which factors the consumers like and which should be improved. 
+Firstly, the data set is cleaned and analyzed before using the factor analysis function. The data set "Attribute Rating", which contains the evaluation of each attribute per chocolat bar on a scale from 1 till 5 from 50 participants, is loaded and cleaned. The cleaning program calculates the attribute's mean over all 10 chocolate products. The result is a 50 by 13 matrix.  
 
-```{r fa, echo=FALSE}
-## fa for each of the 10 chocolat products 
-# here for all 10 chocolat products, one fa per chocolat product
-ctr <- 2
-while(ctr < length(bars)) {
-  last_attr <-ctr+12
-  bar_attr <- bars[,ctr:last_attr]
-  #cor(bar_attr)
-  nfac <- length(eigen(cor(b1_attr))$values[eigen(cor(b1_attr))$values > 1.0])
-  b.fa <- fa(bar_attr, nfactors = nfac, rotate = "varimax", cut = 0.3)
-  fa.diagram(b.fa)
-  data.frame(b.fa$scores)[1:2,]
-  
-  ctr <- last_attr+1
-}
+Factor analysis assign each variable to a latent variable, the factor, based on their correlation. The value of the eigenvalues of the data set as a matrix show how many variables the eigenvector explains. Fig. B1 shows the eigenvalue of each variable. 5 variables have a eigenvalue > 1. The model has a good fit with 5 or less factors.
+
+```{r eigenvalue, echo=FALSE}
+if(!require("tidyverse")) install.packages("tidyverse"); library("tidyverse") # load the package
+if(!require("lavaan")) install.packages("lavaan",dependencies=T); library("lavaan") # load the package
+if(!require("semTools")) install.packages("semTools", dependencies=T); library("semTools") # load the package
+# if(!require("semPlot")) install.packages("semPlot", dependencies=T); library("semPlot") # load the package
+if(!require("psych")) install.packages("psych", dependencies=T); library("psych") # load the package
+if(!require("car")) install.packages("car", dependencies=T); library("car") # load the package
+if(!require("RColorBrewer")) install.packages("RColorBrewer", dependencies=T); library("RColorBrewer") # load the package
+
+attributeRating_df <- read.csv("attribute_evaluation_choc_bars.csv", sep = ";", header = TRUE)
+
+attributeRating_df <- attributeRating_df %>% 
+  gather(k, v, -Person) %>% 
+  separate(k, c("brand","b"), sep =  "_") %>% 
+  spread(b, v, fill = "") %>% 
+  arrange(brand)
+
+attributeRating_df[, 3:15] <- sapply(attributeRating_df[, 3:15], as.numeric)
+attributeRating_df$brand<-factor(attributeRating_df$brand)
+levels(attributeRating_df$brand)<-c("Snickers", "Kinder Bueno", "Twix", "Mars", "KitKat",
+                                    "Bounty", "Kinder Riegel", "Balisto Korn-Mix", "Lion",
+                                    "Duplo")
+
+#summary(attributeRating_df[, 3:15])
+describe(attributeRating_df[, 3:15], na.rm = TRUE)
+
+sort(round(eigen(cor(attributeRating_df[,3:15], use = "complete.obs"))$values, 2), decreasing = TRUE) #result: 5 factors EV > 1
 
 ```
 
-# Report and Interpret Results
+# Report Results
 
+The model best fit is with 4 factors, using the method "minres" and the orthogonal rotation model. One variable is assigned to one factor with the lower theshold at 0.3. The first factor induces the attributes image, commercial and wrapping. The assigned name is "Packaging". The second factor induces the attributes sweet, chocolaty and creamy. The assigned name is "Taste". The third factor induces the attributes addiction and rich, the name of the factor is "Frequency of eating". The fourth factor induces the variables handy, accessible and calorie. The assigned name is "Usability". The attribute "calorie" is assigned with 0.3 which explains the weak explanation fit to the factor "Usabilty" Figrue B2 shows the scores for the first two factors. The attributes crunchy and healthful have no assignment to one factor, hence they are neglected. Fig. B3 shows the scores of the first two factors "Packaging" and "Taste". 
+
+```{r fa, echo=FALSE}
+pies.fa <- fa(attributeRating_df[3:15], missing = TRUE, nfactors = 4, rotate = "varimax", cut = 0.3)
+fa.diagram(pies.fa)
+fa.scores <- data.frame(pies.fa$scores)[,1:2]
+round(fa.scores, 2)
+```
+
+# Interpret results
+
+
+
+# Appendix
+
+```{r}
+pies.fa <- fa(attributeRating_df[3:15], missing = TRUE, nfactors = 4, rotate = "varimax", cut = 0.3)
+fa.diagram(pies.fa)
+```
 
