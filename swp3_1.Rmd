@@ -154,13 +154,13 @@ Firstly, the data set is cleaned and analyzed before using the factor analysis f
 Factor analysis assign each variable to a latent variable, the factor, based on their correlation. The value of the eigenvalues of the data set as a matrix show how many variables the eigenvector explains. Fig. B1 shows the eigenvalue of each variable. 5 variables have a eigenvalue > 1. The model has a good fit with 5 or less factors.
 
 ```{r eigenvalue, echo=FALSE, fig.cap="Fig. B1: Sorted list of the eigenvalues of the Participants-Attribute Matrix"}
-if(!require("tidyverse")) install.packages("tidyverse"); library("tidyverse") # load the package
-if(!require("lavaan")) install.packages("lavaan",dependencies=T); library("lavaan") # load the package
-if(!require("semTools")) install.packages("semTools", dependencies=T); library("semTools") # load the package
-# if(!require("semPlot")) install.packages("semPlot", dependencies=T); library("semPlot") # load the package
-if(!require("psych")) install.packages("psych", dependencies=T); library("psych") # load the package
-if(!require("car")) install.packages("car", dependencies=T); library("car") # load the package
-if(!require("RColorBrewer")) install.packages("RColorBrewer", dependencies=T); library("RColorBrewer") # load the package
+library("tidyverse") # load the package
+library("lavaan") # load the package
+library("semTools") # load the package
+#library("semPlot") # load the package
+library("psych") # load the package
+library("car") # load the package
+ibrary("RColorBrewer") # load the package
 
 attributeRating_df <- read.csv("attribute_evaluation_choc_bars.csv", sep = ";", header = TRUE)
 
