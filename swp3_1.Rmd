@@ -204,3 +204,9 @@ pander(distance_df, split.table = 95, style = 'rmarkdown', caption = "distance m
 pander(fit, split.table=95, style='rmarkdown', caption='coordinates after multidimensional scaling using cmdscale')
 #kable(distance_df)
 ```
+
+## Apendix for Factor Analysis
+
+```{r appendix_fa, echo=FALSE, fig.cap="Diagram of Factor Analysis"}
+fa.diagram(pies.fa)
+```
