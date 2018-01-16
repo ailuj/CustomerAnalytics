@@ -193,8 +193,7 @@ round(fa.scores, 2)
 ```
 
 # Interpret results
-
-In the factor analysis the attribute _crunchy_ was neglected because it could not be assigned to any of the factors. However, in the euclidean distance calculation, _crunchy_ was one of the most important attributes in order to differentiate the different chocolate bars. To neglect healthful is a more reasonable approach, as none of the chocolate bars have been rated very healthful. The ratings for the attributes _wrapping_, _commercial_ and _image_ are quite similar, all with mean values between 3 and 4, so it is reasonable to combine them to a factor _packaging_, as suggested by the factor analysis.
+In the factor analysis the attribute _crunchy_ was neglected because it could not be assigned to any of the factors. However, in the euclidean distance calculation, _crunchy_ was one of the most important attributes in order to differentiate the different chocolate bars. To neglect healthful is a more reasonable approach, as none of the chocolate bars have been rated very healthful. The ratings for the attributes _wrapping_, _commercial_ and _image_ are quite similar, all with mean values between 3 and 4, so it is reasonable to combine them to a factor _packaging_, as suggested by the factor analysis. Although fewer attributes contribute to clarity and comprehensibility, crucial attributes, such as taste - attributes for chocolate bars, should not be reduced. Taste is extremely subjective, hence it is more expressive to rate attributes such as _creamy_ or _chocolaty_. The metric MDS is quite dense around the center with a relatively even distribution of attributes. With less attributes, the metric MDS would be much more readable. Pre-processing the data by performing a factor analysis first would be a reasonable approach in this case. 
 
 # Appendix
 ```{r, echo=FALSE}
