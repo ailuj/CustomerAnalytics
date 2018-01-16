@@ -144,7 +144,7 @@ arrows(x0 = c(0, 0, 0), y0 = c(0, 0, 0),
 text(t(coef(profit)*3), colnames(coef(profit)*3), cex=0.6, col = 1, pos = 4)
 ```
 
-The tables show that the chocolate bars Snickers, Twix, Duplo and KitKat are rated more crunchy, whereas Kinder Riegel, Mars and Bounty are rated creamy. It is also visible that none of the chocolate bars have been rated very healthful - the highest rated is Balisto Korn-Mix with mean = 2.17. Altogether, the chocolate bars are distributed quite evenly on the map, which shows that the differences according to the attributes are rather small. For each of the attributes in the center of the map (handy, addiction, sweet, calorie, wrapping, rich), the chocolate bars have very similar ratings. The ratings for attributes such as creamy and crunchy however are more diverse.
+The tables show that the chocolate bars Snickers, Twix, Duplo and KitKat are rated more crunchy, whereas Kinder Riegel, Mars and Bounty are rated creamy. It is also visible that none of the chocolate bars have been rated very healthful - the highest rated is Balisto Korn-Mix with mean = 2.17. Altogether, the chocolate bars are distributed quite evenly on the map, which shows that the differences according to the attributes are rather small. For each of the attributes in the center of the map (handy, addiction, sweet, calorie, wrapping, rich), the chocolate bars have very similar ratings. The ratings for attributes such as creamy and crunchy however, are more diverse.
 
 # Factor Analysis
 
