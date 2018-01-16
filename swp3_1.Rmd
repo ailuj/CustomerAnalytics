@@ -194,6 +194,8 @@ round(fa.scores, 2)
 
 # Interpret results
 
+In the factor analysis the attribute _crunchy_ was neglected because it could not be assigned to any of the factors. However, in the euclidean distance calculation, _crunchy_ was one of the most important attributes in order to differentiate the different chocolate bars. To neglect healthful is a more reasonable approach, as none of the chocolate bars have been rated very healthful. The ratings for the attributes _wrapping_, _commercial_ and _image_ are quite similar, all with mean values between 3 and 4, so it is reasonable to combine them to a factor _packaging_, as suggested by the factor analysis.
+
 # Appendix
 ```{r, echo=FALSE}
 library(pander)
