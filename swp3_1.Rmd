@@ -1,11 +1,15 @@
 ---
-title: "Special Work Performance 3: Diving into the Data"
-author: 'Natalie und Julia'
+title: 'Special Work Performance 3: Diving into the Data'
+author: "Natalie und Julia"
 geometry: margin=2cm
-output: 
+header-includes:
+  - \usepackage{tinytex}
+output:
   pdf_document:
-    fig_caption: true
+    fig_caption: yes
     keep_tex: yes
+  html_document:
+    df_print: paged
 sansfont: times
 fontsize: 12pt
 ---
@@ -15,7 +19,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 options(repos=c(CRAN = "https://cran.uni-muenster.de/"))
 ```
-
 \begin{center}
 Humboldt University Berlin 
 
@@ -33,7 +36,8 @@ Submitted on November xx, xxxx
 ## set environment
 wdir <- "C:\\Users\\Natalie\\Dropbox\\WiSe201718\\Customer Analytics and Customer Insights\\Data"
 setwd(wdir)
-install.packages("psych"); library(psych)
+install.packages("psych"); 
+library(psych)
 
 ## functions
 std_rank <- function(x){
@@ -68,6 +72,24 @@ rank <- sort(round(sapply(rating, std_rank), digits = 2), decreasing = TRUE)
 ```
 
 ## Describing the Attributes of the Chocolate Bars
+
+#Euclidean Distances
+
+The following presents the euclidean distances between the chocolate bars. In order to process the data accordingly, it was necessary to clean and transform the data. The objective is to create a distance matrix, which can then be used to visualise the distances on a two dimensional perceptual map. Using regression, the attributes should be mapped onto the perceptual map. The given version of the table _Attribute Rating_ contains one column for each chocolate bar - attribute - combination as well as one column _Person_. Hence, each row contains all the answers of one person. In order to produce the desired output, the data needs to be transformed so that there is an additional column _Chocolate Bar_ and only one column per attribute, e.g. crunchy, healthful, chocolaty etc. \\
+\begin{table}
+person &    b1_crunchy &  b1_creamy  &     ...  &     b2_crunchy \\
+\hline
+ 1     &    5         &   4       & ...         &      4
+\end{table}
+
+  person     b1_crunchy   b1_creamy       ...       b2_crunchy
+ -------     ----------  ----------      ----       ----------
+  1                   5           4       ...                4                     
+
+  person     chocolate bar   crunchy    creamy       ...    b2_crunchy
+ -------            ------  --------   -------   -------       -------
+       1          Snickers         4         5       ...             4   
+
 
 # Factor Analysis
 
