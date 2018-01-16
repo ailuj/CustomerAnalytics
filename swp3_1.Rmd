@@ -1,16 +1,13 @@
 ---
-title: 'Special Work Performance 3: Diving into the Data'
-author: "Natalie und Julia"
+title: "Special Work Performance 3: Reducing Data Complexity"
+author: 'Natalie und Julia'
 geometry: margin=2cm
-header-includes:
-  - \usepackage{tinytex}
 output:
-  pdf_document:
-    fig_caption: yes
-    keep_tex: yes
-  html_document:
-    df_print: paged
-sansfont: times
+   pdf_document:
+     latex_engine: xelatex
+   fig_caption: true
+   keep_tex: yes
+#sansfont: times
 fontsize: 12pt
 ---
 
@@ -19,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 options(repos=c(CRAN = "https://cran.uni-muenster.de/"))
 ```
+
 \begin{center}
 Humboldt University Berlin 
 
@@ -34,9 +32,9 @@ Submitted on November xx, xxxx
 
 ```{r dataset, echo=FALSE}
 ## set environment
-wdir <- "C:\\Users\\Natalie\\Dropbox\\WiSe201718\\Customer Analytics and Customer Insights\\Data"
-setwd(wdir)
-install.packages("psych"); 
+#wdir <- "C:\\Users\\Natalie\\Dropbox\\WiSe201718\\Customer Analytics and Customer Insights\\Data"
+#setwd(wdir)
+#install.packages("psych"); 
 library(psych)
 
 ## functions
@@ -66,7 +64,7 @@ for(col in 1:length(bars)) {
 
 The given data set is about 10 different chocolate bar products. Four tables organize the accquired data in the tables "General Consumption", "Direct Preference Rating", "Attribute Rating" and "Social Demographic Questions". 15 participants evaluate 10 different choclate bars by 13 attributes. The participants rate directly their preferences of the chocolate bars on a scale from 1 till 7. The most popular bar is "Kinderriegel", the least popular one "Mars" as shown in figure 1.
 
-```{r rank, echo=FALSE}
+```{r rank, echo=FALSE, fig.cap="Figure 1: Rank of the 10 chocolat products"}
 # main : rankings of chocolat bars
 rank <- sort(round(sapply(rating, std_rank), digits = 2), decreasing = TRUE)
 ```
@@ -75,51 +73,131 @@ rank <- sort(round(sapply(rating, std_rank), digits = 2), decreasing = TRUE)
 
 #Euclidean Distances
 
-The following presents the euclidean distances between the chocolate bars. In order to process the data accordingly, it was necessary to clean and transform the data. The objective is to create a distance matrix, which can then be used to visualise the distances on a two dimensional perceptual map. Using regression, the attributes should be mapped onto the perceptual map. The given version of the table _Attribute Rating_ contains one column for each chocolate bar - attribute - combination as well as one column _Person_. Hence, each row contains all the answers of one person. In order to produce the desired output, the data needs to be transformed so that there is an additional column _Chocolate Bar_ and only one column per attribute, e.g. crunchy, healthful, chocolaty etc. \\
-\begin{table}
-person &    b1_crunchy &  b1_creamy  &     ...  &     b2_crunchy \\
-\hline
- 1     &    5         &   4       & ...         &      4
-\end{table}
+The following presents the euclidean distances between the chocolate bars. In order to process the data accordingly, it was necessary to clean and transform the data. The objective is to create a distance matrix, which can then be used to visualise the distances on a two dimensional perceptual map. Using regression, the attributes should be mapped onto the perceptual map. The given version of the table _Attribute Rating_ contains one column for each chocolate bar - attribute - combination as well as one column _Person_. Hence, each row contains all the answers of one person. In order to produce the desired output, the data needed to be transformed so that there is an additional column _Chocolate Bar_ and only one column per attribute, e.g. crunchy, healthful, chocolaty etc. Furthermore, missing data needed to be removed by omitting rows that contain NA.
 
-  person     b1_crunchy   b1_creamy       ...       b2_crunchy
- -------     ----------  ----------      ----       ----------
-  1                   5           4       ...                4                     
+```{r euclidean distances, echo = FALSE}
+library(knitr)
+data <- na.omit(bars)
 
-  person     chocolate bar   crunchy    creamy       ...    b2_crunchy
- -------            ------  --------   -------   -------       -------
-       1          Snickers         4         5       ...             4   
+person <- c(data$Person, data$Person, data$Person, data$Person, data$Person, data$Person, data$Person, data$Person, data$Person, data$Person)
+choc_bar <- rep(c("Snickers", "Kinder Bueno", "Twix", "Mars", "KitKat", "Bounty", "Kinder Riegel", "Balisto Korn-Mix", "Lion", "Duplo"), 
+                each = length(data$Person))
+crunchy <- c(data$b1_crunchy, data$b2_crunchy, data$b3_crunchy, data$b4_crunchy, data$b5_crunchy, data$b6_crunchy, data$b7_crunchy, data$b8_crunchy, data$b9_crunchy, data$bb_crunchy)
+creamy <- c(data$b1_creamy, data$b2_creamy, data$b3_creamy, data$b4_creamy, data$b5_creamy, data$b6_creamy, data$b7_creamy, data$b8_creamy, data$b9_creamy, data$bb_creamy)
+sweet <- c(data$b1_sweet, data$b2_sweet, data$b3_sweet, data$b4_sweet, data$b5_sweet, data$b6_sweet, data$b7_sweet, data$b8_sweet, data$b9_sweet, data$bb_sweet)
+chocolaty <- c(data$b1_chocolaty, data$b2_chocolaty, data$b3_chocolaty, data$b4_chocolaty, data$b5_chocolaty, data$b6_chocolaty, data$b7_chocolaty, data$b8_chocolaty, data$b9_chocolaty, data$bb_chocolaty)
+healthful <- c(data$b1_healthful, data$b2_healthful, data$b3_healthful, data$b4_healthful, data$b5_healthful, data$b6_healthful, data$b7_healthful, data$b8_healthful, data$b9_healthful, data$bb_healthful)
+calorie <- c(data$b1_calorie, data$b2_calorie, data$b3_calorie, data$b4_calorie, data$b5_calorie, data$b6_calorie, data$b7_calorie, data$b8_calorie, data$b9_calorie, data$bb_calorie)
+rich <- c(data$b1_rich, data$b2_rich, data$b3_rich, data$b4_rich, data$b5_rich, data$b6_rich, data$b7_rich, data$b8_rich, data$b9_rich, data$bb_rich)
+addiction <- c(data$b1_addiction, data$b2_addiction, data$b3_addiction, data$b4_addiction, data$b5_addiction, data$b6_addiction, data$b7_addiction, data$b8_addiction, data$b9_addiction, data$bb_addiction)
+accessible <- c(data$b1_accessible, data$b2_accessible, data$b3_accessible, data$b4_accessible, data$b5_accessible, data$b6_accessible, data$b7_accessible, data$b8_accessible, data$b9_accessible, data$bb_accessible)
+handy <- c(data$b1_handy, data$b2_handy, data$b3_handy, data$b4_handy, data$b5_handy, data$b6_handy, data$b7_handy, data$b8_handy, data$b9_handy, data$bb_handy)
+wrapping <- c(data$b1_wrapping, data$b2_wrapping, data$b3_wrapping, data$b4_wrapping, data$b5_wrapping, data$b6_wrapping, data$b7_wrapping, data$b8_wrapping, data$b9_wrapping, data$bb_wrapping)
+image <- c(data$b1_image, data$b2_image, data$b3_image, data$b4_image, data$b5_image, data$b6_image, data$b7_image, data$b8_image, data$b9_image, data$bb_image)
+commercial <- c(data$b1_commercial, data$b2_commercial, data$b3_commercial, data$b4_commercial, data$b5_commercial, data$b6_commercial, data$b7_commercial, data$b8_commercial, data$b9_commercial, data$bb_commercial)
 
+data_cleaned <- data.frame(person, choc_bar, crunchy, creamy, sweet, chocolaty, healthful, calorie, rich, addiction, accessible, handy, wrapping, image, commercial)
+#data_cleaned <- na.omit(data_complete)
+kable(data[1:2, 1:4], caption = "data before transformation")
 
-# Factor Analysis
+kable(data_cleaned[1:2, 1:5], caption = "data after transformation")
+```
 
-The data reduction technique Factor Analysis investigates the relationships of the attributes by collapsing a large number of variables into a few interpretable underlying factors, the latent variables. The participants weight multiple variables similar because they belong to the same latent variable. 
-In the first step, the data set "Attribute Rating", which contains the evaluation of each attribute per chocolat bar on a scale from 1 till 5 from 50 participants, is loaded and cleaned. The attribute's mean over all 50 observations replaces missing values. 
--Step 2: Examine correlation matrix
--Step 3: Determine number of factors by eigenvalue >1
--Step 4: Choose a factor rotation model, here rotation = "varimax"
--Step 5: fit the model and interpret the factors, assign them with names
--Step 6: Repeat and compare with different factor levels, rotation method
--Step 7: Use factor scores for respondents, factor scores show the best estimate for the latent variable
+Then, the data was aggregated by calulating the mean of each combination of chocolate bars and attributes.
 
-```{r fa, echo=FALSE}
-## fa for each of the 10 chocolat products 
-# here for all 10 chocolat products, one fa per chocolat product
-ctr <- 2
-while(ctr < length(bars)) {
-  last_attr <-ctr+12
-  bar_attr <- bars[,ctr:last_attr]
-  #cor(bar_attr)
-  nfac <- length(eigen(cor(b1_attr))$values[eigen(cor(b1_attr))$values > 1.0])
-  b.fa <- fa(bar_attr, nfactors = nfac, rotate = "varimax", cut = 0.3)
-  fa.diagram(b.fa)
-  data.frame(b.fa$scores)[1:2,]
-  
-  ctr <- last_attr+1
-}
+```{r, echo=FALSE}
+data_aggregated <- aggregate(data_cleaned[,-c(1,2)], by=list(data_cleaned$choc_bar),mean, na.rm=TRUE)
+kable(data_aggregated[1:2, 1:4], caption = "mean values of chocolate bar - attribute - combinations")
+```
+
+The resulting table was used to create a matrix containing euclidean distances between the chocolate bars. In order to visualize the data on a two dimensional plane, multidimensional scaling was necessary. Using regression, the attributes were then fitted into the map. For visibility purposes, the upper table gives a general view on the distribution of the data on a two dimensional plane, whereas the lower table concentrates on the center of the map, where most of the attributes are located.  
+
+```{r, echo=FALSE}
+distance_df <- as.matrix(dist(data_aggregated[,-c(1)], method = 'euclidean'), labels=TRUE)
+colnames(distance_df) <- rownames(distance_df) <- data_aggregated$Group.1
+fit <- cmdscale(distance_df)
+x <- fit[,1]
+y <- fit[,2]
+
+data_aggregated$x <- x
+data_aggregated$y <- y
+
+profit <- lm(cbind(crunchy, creamy, sweet, chocolaty, healthful, calorie,
+                   rich, addiction, accessible, handy, wrapping, image, commercial) ~ -1 + x + y, data = data_aggregated)
+
+#coef(profit)
+plot(x, y, xlab = "Coordinate 1", ylab = "Coordinate 2", main = "Metric MDS for Chocolate Bars", pch = 19, ylim = c(-3, 3), xlim = c(-3, 3))
+text(x, y, labels = data_aggregated$Group.1, cex = 0.75, pos = 4) 
+abline(h = 0, v = 0, col = "grey")
+arrows(x0 = c(0, 0, 0), y0 = c(0, 0, 0),
+       x1 = coef(profit)[1, ]*3, y1 = coef(profit)[2, ]*3, col = 2, lwd = 1)
+text(t(coef(profit)*3.5), colnames(coef(profit)*3.5), cex=0.6, col = 1, pos = 4)
 
 ```
 
-# Report and Interpret Results
+```{r, echo=FALSE}
+plot(x, y, xlab = "Coordinate 1", ylab = "Coordinate 2", main = "Metric MDS for Chocolate Bars 2", pch = 19, ylim = c(-1.5, 1.5), xlim = c(-1.5, 1.5))
+text(x, y, labels = data_aggregated$Group.1, cex = 0.75, pos = 4) 
+abline(h = 0, v = 0, col = "grey")
+arrows(x0 = c(0, 0, 0), y0 = c(0, 0, 0),
+       x1 = coef(profit)[1, ]*3, y1 = coef(profit)[2, ]*3, col = 2, lwd = 1)
+text(t(coef(profit)*3), colnames(coef(profit)*3), cex=0.6, col = 1, pos = 4)
+```
 
+The tables show that the chocolate bars Snickers, Twix, Duplo and KitKat are rated more crunchy, whereas Kinder Riegel, Mars and Bounty are rated creamy. It is also visible that none of the chocolate bars have been rated very healthful - the highest rated is Balisto Korn-Mix with mean = 2.17. Altogether, the chocolate bars are distributed quite evenly on the map, which shows that the differences according to the attributes are rather small. For each of the attributes in the center of the map (handy, addiction, sweet, calorie, wrapping, rich), the chocolate bars have very similar ratings. The ratings for attributes such as creamy and crunchy however are more diverse.
 
+# Factor Analysis
+
+The data reduction technique Factor Analysis investigates the relationships of the attributes by collapsing a large number of variables into a few interpretable underlying factors, the latent variables. The participants weight multiple variables similar because they belong to the same latent variable. The question that should be answered with factor analysis in the following analysis is "What are the important attributes in general?". The findings show which factors the consumers like and which should be improved. 
+Firstly, the data set is cleaned and analyzed before using the factor analysis function. The data set "Attribute Rating", which contains the evaluation of each attribute per chocolat bar on a scale from 1 till 5 from 50 participants, is loaded and cleaned. The cleaning program calculates the attribute's mean over all 10 chocolate products. The result is a 50 by 13 matrix.  
+
+Factor analysis assign each variable to a latent variable, the factor, based on their correlation. The value of the eigenvalues of the data set as a matrix show how many variables the eigenvector explains. Fig. B1 shows the eigenvalue of each variable. 5 variables have a eigenvalue > 1. The model has a good fit with 5 or less factors.
+
+```{r eigenvalue, echo=FALSE, fig.cap="Fig. B1: Sorted list of the eigenvalues of the Participants-Attribute Matrix"}
+if(!require("tidyverse")) install.packages("tidyverse"); library("tidyverse") # load the package
+if(!require("lavaan")) install.packages("lavaan",dependencies=T); library("lavaan") # load the package
+if(!require("semTools")) install.packages("semTools", dependencies=T); library("semTools") # load the package
+# if(!require("semPlot")) install.packages("semPlot", dependencies=T); library("semPlot") # load the package
+if(!require("psych")) install.packages("psych", dependencies=T); library("psych") # load the package
+if(!require("car")) install.packages("car", dependencies=T); library("car") # load the package
+if(!require("RColorBrewer")) install.packages("RColorBrewer", dependencies=T); library("RColorBrewer") # load the package
+
+attributeRating_df <- read.csv("attribute_evaluation_choc_bars.csv", sep = ";", header = TRUE)
+
+attributeRating_df <- attributeRating_df %>% 
+  gather(k, v, -Person) %>% 
+  separate(k, c("brand","b"), sep =  "_") %>% 
+  spread(b, v, fill = "") %>% 
+  arrange(brand)
+
+attributeRating_df[, 3:15] <- sapply(attributeRating_df[, 3:15], as.numeric)
+attributeRating_df$brand<-factor(attributeRating_df$brand)
+levels(attributeRating_df$brand)<-c("Snickers", "Kinder Bueno", "Twix", "Mars", "KitKat",
+                                    "Bounty", "Kinder Riegel", "Balisto Korn-Mix", "Lion",
+                                    "Duplo")
+
+#summary(attributeRating_df[, 3:15])
+describe(attributeRating_df[, 3:15], na.rm = TRUE)
+
+sort(round(eigen(cor(attributeRating_df[,3:15], use = "complete.obs"))$values, 2), decreasing = TRUE) #result: 5 factors EV > 1
+```
+
+# Report Results
+
+The model best fit is with 4 factors, using the method "minres" and the orthogonal rotation model. One variable is assigned to one factor with the lower theshold at 0.3. The first factor induces the attributes image, commercial and wrapping. The assigned name is "Packaging". The second factor induces the attributes sweet, chocolaty and creamy. The assigned name is "Taste". The third factor induces the attributes addiction and rich, the name of the factor is "Frequency of eating". The fourth factor induces the variables handy, accessible and calorie. The assigned name is "Usability". The attribute "calorie" is assigned with 0.3 which explains the weak explanation fit to the factor "Usabilty". The attributes crunchy and healthful have no assignment to one factor, hence they are neglected. Fig. B3 shows the scores of the first two factors "Packaging" and "Taste". 
+
+```{r fa, echo=FALSE, fig.cap="Fig. B2: Factor scores of the factors Packaging and Taste"}
+pies.fa <- fa(attributeRating_df[3:15], missing = TRUE, nfactors = 4, rotate = "varimax", cut = 0.3)
+fa.diagram(pies.fa)
+fa.scores <- data.frame(pies.fa$scores)[,1:2]
+round(fa.scores, 2)
+```
+
+# Interpret results
+
+# Appendix
+```{r, echo=FALSE}
+library(pander)
+pander(distance_df, split.table = 95, style = 'rmarkdown', caption = "distance matrix for chocolate bars")
+#kable(distance_df)
+```
