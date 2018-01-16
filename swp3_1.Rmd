@@ -125,7 +125,6 @@ data_aggregated$y <- y
 profit <- lm(cbind(crunchy, creamy, sweet, chocolaty, healthful, calorie,
                    rich, addiction, accessible, handy, wrapping, image, commercial) ~ -1 + x + y, data = data_aggregated)
 
-#coef(profit)
 plot(x, y, xlab = "Coordinate 1", ylab = "Coordinate 2", main = "Metric MDS for Chocolate Bars", pch = 19, ylim = c(-3, 3), xlim = c(-3, 3))
 text(x, y, labels = data_aggregated$Group.1, cex = 0.75, pos = 4) 
 abline(h = 0, v = 0, col = "grey")
@@ -144,7 +143,7 @@ arrows(x0 = c(0, 0, 0), y0 = c(0, 0, 0),
 text(t(coef(profit)*3), colnames(coef(profit)*3), cex=0.6, col = 1, pos = 4)
 ```
 
-The tables show that the chocolate bars Snickers, Twix, Duplo and KitKat are rated more crunchy, whereas Kinder Riegel, Mars and Bounty are rated creamy. It is also visible that none of the chocolate bars have been rated very healthful - the highest rated is Balisto Korn-Mix with mean = 2.17. Altogether, the chocolate bars are distributed quite evenly on the map, which shows that the differences according to the attributes are rather small. For each of the attributes in the center of the map (handy, addiction, sweet, calorie, wrapping, rich), the chocolate bars have very similar ratings. The ratings for attributes such as creamy and crunchy however, are more diverse.
+The tables show that the chocolate bars Snickers, Twix, Duplo and KitKat are rated more crunchy, whereas Kinder Riegel, Mars and Bounty are rated creamy. It is also visible that none of the chocolate bars have been rated very healthful - the highest rated is Balisto Korn-Mix with mean = 2.17. Altogether, the chocolate bars are distributed quite evenly on the map, which shows that the differences according to the attributes are rather small. For each of the attributes in the center of the map (handy, addiction, sweet, calorie, wrapping, rich), the chocolate bars have very similar ratings. The ratings for attributes such as creamy and crunchy, however, are more diverse.
 
 # Factor Analysis
 
@@ -199,5 +198,6 @@ round(fa.scores, 2)
 ```{r, echo=FALSE}
 library(pander)
 pander(distance_df, split.table = 95, style = 'rmarkdown', caption = "distance matrix for chocolate bars")
+pander(fit, split.table=95, style='rmarkdown', caption='coordinates after multidimensional scaling using cmdscale')
 #kable(distance_df)
 ```
